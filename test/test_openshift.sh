@@ -9,8 +9,15 @@ if test ! -f $OSHT ;
 fi
 . $OSHT
 
-PLAN 4
+PLAN 10
 RUNS docker --version
 GREP "version 18.09.2"
 RUNS docker-compose version
 GREP "version 1.23.2"
+
+RUNS docker volume create mysql_data
+RUNS docker volume list
+GREP mysql_data
+RUNS docker volume remove mysql_data
+RUNS docker volume list
+NGREP mysql_data
