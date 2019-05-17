@@ -9,7 +9,7 @@ if test ! -f $OSHT ;
 fi
 . $OSHT
 
-PLAN 10
+PLAN 11
 RUNS docker --version
 GREP "version 18.09.2"
 RUNS docker-compose version
@@ -23,6 +23,22 @@ GREP "version 1.23.2"
 RUNS docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypassword mysql:5.6 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 MYSQLCONTAINER=$(cat $OSHT_STDOUT)
 echo MYSQLCONTAINER: $MYSQLCONTAINER
+
+#RUNS docker volume create mautic_data
+
+#RUNS docker run --rm -e MAUTIC_DB_HOST=127.0.0.1 -e MAUTIC_DB_USER=root -e MAUTIC_DB_PASSWORD=mypassword -e MAUTIC_DB_NAME=mautic -e MAUTIC_RUN_CRON_JOBS=true -e MAUTIC_TRUSTED_PROXIES=0.0.0.0/0 -p 8080:80 -v mautic_data:/var/www/html mautic/mautic:latest whoami
+#cat $OSHT_STDOUT
+
+RUNS docker run --name mautic -d --restart=always -e MAUTIC_DB_HOST=127.0.0.1 -e MAUTIC_DB_USER=root -e MAUTIC_DB_PASSWORD=mypassword -e MAUTIC_DB_NAME=mautic -e MAUTIC_RUN_CRON_JOBS=true -e MAUTIC_TRUSTED_PROXIES=0.0.0.0/0 -p 8080:80 mautic/mautic:latest
+MAUTICCONTAINER=$(cat $OSHT_STDOUT)
+
+RUNS docker exec "$MAUTICCONTAINER" whoami
+GREP root
+
+RUNS docker kill "$MAUTICCONTAINER"
+RUNS docker rm "$MAUTICCONTAINER"
+
+#RUNS docker volume remove mautic_data
 
 RUNS docker kill "$MYSQLCONTAINER"
 
