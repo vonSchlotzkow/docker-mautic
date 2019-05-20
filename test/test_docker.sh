@@ -1,19 +1,10 @@
 #!/bin/bash
 
-OSHTSRC="https://raw.githubusercontent.com/coryb/osht/master/osht.sh"
-OSHT="osht.sh"
-if test ! -f $OSHT ;
-  then
-  echo downloading $OSHT
-  curl --progress-bar $OSHTSRC -o $OSHT
-fi
-. $OSHT
+. osht_init.sh
 
-PLAN 11
+PLAN 9
 RUNS docker --version
 GREP "version 18.09.2"
-RUNS docker-compose version
-GREP "version 1.23.2"
 
 #RUNS docker volume create mysql_data
 #RUNS docker volume list
@@ -33,7 +24,7 @@ RUNS docker run --name mautic -d --restart=always -e MAUTIC_DB_HOST=127.0.0.1 -e
 MAUTICCONTAINER=$(cat $OSHT_STDOUT)
 
 RUNS docker exec "$MAUTICCONTAINER" whoami
-GREP root
+GREP ^root
 
 RUNS docker kill "$MAUTICCONTAINER"
 RUNS docker rm "$MAUTICCONTAINER"

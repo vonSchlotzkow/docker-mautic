@@ -2,8 +2,8 @@ How to deploy to openshift
 ==========================
 
 ## Todo
-- [ ] test running Docker image on plain Docker
-- [ ] test running images from docker-compose
+- [x] test running Docker image on plain Docker
+- [x] test running images from docker-compose
 - [ ] test running image on openshift/minishift (expected to fail because of 'running as root' issue)
 - [ ] build image based on modified Dockerfile
 - [ ] test running image built from own Dockerfile on plain Docker
