@@ -8,10 +8,10 @@ PLAN 14
 RUNS oc version
 GREP "oc v3.11.0"
 GREP "kubernetes v1.11.0"
-GREP "openshift v3.11.82"
+GREP "openshift v3.11"
 
 RUNS oc status
-GREP "In project mymautic on server"
+GREP "In project verno-stageing on server"
 
 
 #RUNS oc new-project mymautic
@@ -22,6 +22,13 @@ RUNS oc create -f svc-mysql.yaml
 GREP 'service/mysql created'
 
 sleep $DELAY
+
+# create build config:
+# in directory ../apache:
+# ----- oc new-build . --name mautic-apache
+#oc new-build . --name mautic-apache --context-dir=apache/
+# cat apache/Dockerfile | oc new-build . --name mautic-apache --context-dir=apache/ --dockerfile=- && oc start-build bc/mautic-apache && oc logs -f bc/mautic-apache
+
 
 RUNS oc delete -f svc-mysql.yaml
 GREP 'service "mysql" deleted'

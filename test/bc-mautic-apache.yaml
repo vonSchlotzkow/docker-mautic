@@ -1,0 +1,47 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  creationTimestamp: null
+  labels:
+    build: mautic-apache
+  name: mautic-apache
+  selfLink: /apis/build.openshift.io/v1/namespaces/verno-staging/buildconfigs/mautic-apache
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: mautic-apache:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: apache
+    git:
+      ref: openshift
+      uri: https://github.com/vonSchlotzkow/docker-mautic.git
+    type: Git
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: php:7.1-apache
+        namespace: verno-staging
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - github:
+      secret: 5DHQwHvFP_6K5Ss0d1_c
+    type: GitHub
+  - generic:
+      secret: S68o1NwebZSZ7T-2V12e
+    type: Generic
+  - type: ConfigChange
+  - imageChange:
+      lastTriggeredImageID: php@sha256:10b2e6a77fe8644bf941fce395982377515847aceb4d8e75c6c73533deeb6128
+    type: ImageChange
+status:
+  lastVersion: 1
