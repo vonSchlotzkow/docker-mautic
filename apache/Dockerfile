@@ -29,9 +29,6 @@ RUN docker-php-ext-configure imap --with-imap --with-imap-ssl --with-kerberos \
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
-# Define Mautic volume to persist data
-VOLUME /var/www/html
-
 # Define Mautic version and expected SHA1 signature
 ENV MAUTIC_VERSION 2.15.0
 ENV MAUTIC_SHA1 b07bd42bb092cc96785d2541b33700b55f74ece7
@@ -51,6 +48,14 @@ RUN curl -o mautic.zip -SL https://github.com/mautic/mautic/releases/download/${
 	&& rm mautic.zip \
 	&& chown -R www-data:www-data /usr/src/mautic
 
+RUN cd /var/www/html
+RUN  tar cf - --one-file-system -C /usr/src/mautic . | tar xf - -C /var/www/html
+
+RUN chown -R www-data:root /var/www/html
+RUN chmod -R a+rwx /var/www/html
+
+# PERHAPS create a valume
+# VOLUME /var/www/html
 # Copy init scripts and custom .htaccess
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makeconfig.php /makeconfig.php
@@ -66,3 +71,4 @@ RUN ["chmod", "+x", "/entrypoint.sh"]
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["apache2-foreground"]
+USER 100001
